@@ -1,32 +1,32 @@
 {{ config(materialized='table', sort='event_id', dist='event_id') }}
 
-with categories as (
+WITH categories AS (
 
     select * from {{ ref('stg_tickit__categories') }}
 
 ),
 
-events as (
+events AS (
 
     select * from {{ ref('stg_tickit__events') }}
 
 ),
 
-venues as (
+venues AS (
 
     select * from {{ ref('stg_tickit__venues') }}
 
 ),
 
-dates as (
+dates AS (
 
     select * from {{ ref('stg_tickit__dates') }}
 
 ),
 
-final as (
-
-    select 
+final 
+    AS (
+    SELECT 
         e.event_id,
         e.event_name,
         e.start_time,
@@ -40,12 +40,29 @@ final as (
         d.week,
         d.qtr,
         d.holiday
-    from 
-        events as e
-            join categories as c on c.cat_id = e.cat_id
-            join venues as v on v.venue_id = e.venue_id
-            join dates as d on d.date_id = e.date_id
+
+    FROM 
+        events e
+    INNER JOIN 
+        categories c 
+            ON e.cat_id = c.cat_id
+    INNER JOIN 
+        venues v 
+            ON e.venue_id = v.venue_id
+    INNER JOIN 
+        dates d 
+            ON e.date_id = d.date_id
+
+    WHERE 
+        1=1 
 
 )
 
-select * from final
+SELECT 
+    * 
+    
+FROM 
+    final
+
+WHERE   
+    1=1 
